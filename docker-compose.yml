@@ -1,0 +1,30 @@
+version: '3.2'
+services:
+  sidecarmongod:
+    build:
+      context: ./mgodserver-sdcr/
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: confvolume
+        target: /data/configdb/
+    stdin_open: true
+    tty: true
+  mongod:
+    build:
+      context: ./mgodserver/
+      dockerfile: Dockerfile
+    depends_on:
+      - sidecarmongod
+    volumes:
+      - type: volume
+        source: confvolume
+        target: /data/configdb
+      - type: volume
+        source: datavolume
+        target: /data/db
+    ports:
+      - "27017:27017"
+volumes:
+  confvolume:
+  datavolume:
